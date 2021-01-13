@@ -15,6 +15,8 @@ boot:
 
 	call switch_to_32
 
+	call switch_to_64
+
 	jmp $
 
 %include "print_string.asm"
@@ -42,14 +44,26 @@ BEGIN_PM:
 	mov ebx, MSG_PROT_MODE
 	call print_string_pm
 
-	jmp KERNEL_OFFSET
+	;jmp KERNEL_OFFSET
 
+	;jmp $
+
+bits 64
+
+BEGIN_64:
+	rep stosq
+
+	mov rbx, MSG_LONG_MODE
+	call print_string_64
+
+	jmp KERNEL_OFFSET
 	jmp $
 
 BOOT_DRIVE	db 0
 MSG_REAL_MODE	db "Starting 16-bit real mode", 0
-MSG_PROT_MODE	db "Swithed to 32-bit Protected mode!!!!!!!!!!!!!!!!!!", 0
-MSG_LOAD_KERNEL	db "Loading kernel!!!", 0
+MSG_PROT_MODE	db "Switched to 32-bit Protected mode", 0
+MSG_LOAD_KERNEL	db "Loading kernel", 0
+MSG_LONG_MODE	db "Switched to Long Mode",0
 
 times 510-($-$$) db 0
 dw 0xAA55

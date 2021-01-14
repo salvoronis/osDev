@@ -1,0 +1,5 @@
+*.bin
+*.o
+os-image
+*.txt
+a

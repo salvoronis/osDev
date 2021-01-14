@@ -8,7 +8,7 @@ run: all
 	qemu-system-x86_64 os-image
 
 kernel.o: kernel.c
-	$(CC) -m64 -fno-pie -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
+	$(CC) -m64 -fno-pie -nostdlib -ffreestanding -fno-stack-protector -c $< -o $@
 
 kernel_entry.o: kernel_entry.asm
 	$(ASM) $< -f elf64 -o $@

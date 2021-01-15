@@ -5,19 +5,25 @@ LD = ld
 all: os-image
 
 run: all
-	qemu-system-x86_64 os-image
+	qemu-system-x86_64 -fda os-image
 
 kernel.o: kernel.c
-	$(CC) -m64 -fno-pie -nostdlib -ffreestanding -fno-stack-protector -c $< -o $@
+	$(CC) -fno-pie -m32 -ffreestanding -c $< -o $@
+
+io.o: io.c
+	$(CC) -fno-pie -m32 -ffreestanding -c $< -o $@
 
 kernel_entry.o: kernel_entry.asm
-	$(ASM) $< -f elf64 -o $@
+	$(ASM) $< -f elf32 -o $@
+
+io-func.o: io-func.asm
+	$(ASM) $< -f elf32 -o $@
 
 bootstrap.bin: bootstrap.asm
 	$(ASM) $< -f bin -o $@
 
 kernel.bin: kernel_entry.o kernel.o
-	$(LD) -o $@ -Ttext 0x1000 $^ --oformat binary
+	$(LD) -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
 os-image: bootstrap.bin kernel.bin
 	cat $^ > $@

@@ -1,4 +1,6 @@
 extern kernel
+global read_port
+global write_port
 
 bits 32
 _start:
